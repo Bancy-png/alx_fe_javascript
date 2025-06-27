@@ -4,20 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dynamic Quote Generator</title>
-  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <div id="quoteDisplay" class="quote-box"></div>
+  <!-- Display area for quote -->
+  <div id="quoteDisplay"></div>
+
+  <!-- Button to show new quote -->
   <button id="newQuote">Show New Quote</button>
 
-  <div class="form-section">
+  <!-- Input fields to add new quote -->
+  <div>
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-    <button id="addQuoteBtn">Add Quote</button>
+    <button onclick="addQuote()">Add Quote</button>
   </div>
 
+  <!-- Link to JS -->
   <script src="script.js"></script>
 </body>
 </html>
