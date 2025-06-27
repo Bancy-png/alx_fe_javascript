@@ -21,6 +21,7 @@ function addQuote() {
 
   if (text && category) {
     quotes.push({ text, category });
+    displayRandomQuote();
     document.getElementById('newQuoteText').value = '';
     document.getElementById('newQuoteCategory').value = '';
     alert('New quote added!');
