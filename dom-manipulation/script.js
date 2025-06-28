@@ -61,12 +61,48 @@ function addQuote() {
 
   if (newText && newCategory) {
     quotes.push({ text: newText, category: newCategory });
-    saveQuotes(); // Save to localStorage
+    saveQuotes();
     showRandomQuote();
-
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
   }
+}
+
+// ✅ Export quotes to JSON file
+function exportToJsonFile() {
+  const dataStr = JSON.stringify(quotes, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ✅ Import quotes from uploaded JSON file
+function importFromJsonFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      if (Array.isArray(importedQuotes)) {
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        showRandomQuote();
+        alert("Quotes imported successfully!");
+      } else {
+        alert("Invalid file format");
+      }
+    } catch (err) {
+      alert("Failed to import quotes.");
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ✅ DOM is ready
@@ -75,6 +111,7 @@ window.onload = function () {
   showRandomQuote();
   createAddQuoteForm();
 
+  // New Quote Button
   const newQuoteBtn = document.getElementById("newQuote");
   if (newQuoteBtn) {
     newQuoteBtn.addEventListener("click", function () {
@@ -89,5 +126,17 @@ window.onload = function () {
         }));
       }
     });
+  }
+
+  // Export button
+  const exportBtn = document.getElementById("exportQuotes");
+  if (exportBtn) {
+    exportBtn.addEventListener("click", exportToJsonFile);
+  }
+
+  // Import file input
+  const importInput = document.getElementById("importFile");
+  if (importInput) {
+    importInput.addEventListener("change", importFromJsonFile);
   }
 };
