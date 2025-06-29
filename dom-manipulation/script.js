@@ -140,6 +140,7 @@ async function fetchQuotesFromServer() {
     }));
 
     resolveConflicts(serverQuotes);
+    console.log("Quotes synced with server!");
   } catch (error) {
     console.error("Failed to fetch from server:", error);
   }
