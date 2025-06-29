@@ -65,6 +65,7 @@ function addQuote() {
     showRandomQuote();
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
+    postQuoteToServer({ text: newText, category: newCategory });
   }
 }
 
@@ -103,6 +104,22 @@ function importFromJsonFile(event) {
     }
   };
   reader.readAsText(file);
+}
+
+// ✅ Post a new quote to mock server
+async function postQuoteToServer(quote) {
+  try {
+    await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(quote)
+    });
+    console.log('Quote posted to server');
+  } catch (error) {
+    console.error('Failed to post quote to server:', error);
+  }
 }
 
 // ✅ Fetch quotes from mock server and resolve conflicts
