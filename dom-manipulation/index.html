@@ -9,13 +9,16 @@
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Quote Display Area -->
+  <!-- ✅ Notification for Sync Status -->
+  <div id="notification" style="display: none; color: green; font-weight: bold;"></div>
+
+  <!-- ✅ Quote Display Area -->
   <div id="quoteDisplay" class="quote-box"></div>
 
-  <!-- Button to Show Random Quote -->
+  <!-- ✅ Button to Show Random Quote -->
   <button id="newQuote">Show New Quote</button>
 
-  <!-- Quote Input Form (Also created by JS) -->
+  <!-- ✅ Quote Input Form (Can also be created by JS) -->
   <div class="form-section">
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
@@ -28,6 +31,7 @@
   <!-- ✅ Import Quotes File Input -->
   <input type="file" id="importFile" accept=".json" />
 
+  <!-- ✅ JavaScript File -->
   <script src="script.js"></script>
 </body>
 </html>

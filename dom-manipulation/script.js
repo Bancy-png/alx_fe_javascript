@@ -105,13 +105,59 @@ function importFromJsonFile(event) {
   reader.readAsText(file);
 }
 
+// ✅ Fetch quotes from mock server and resolve conflicts
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await response.json();
+
+    const serverQuotes = data.slice(0, 5).map(post => ({
+      text: post.title,
+      category: "Server"
+    }));
+
+    resolveConflicts(serverQuotes);
+  } catch (error) {
+    console.error("Failed to fetch from server:", error);
+  }
+}
+
+// ✅ Resolve conflicts by merging new quotes
+function resolveConflicts(serverQuotes) {
+  let added = 0;
+  const merged = [...quotes];
+
+  serverQuotes.forEach(serverQuote => {
+    const exists = merged.some(localQuote =>
+      localQuote.text === serverQuote.text && localQuote.category === serverQuote.category
+    );
+    if (!exists) {
+      merged.push(serverQuote);
+      added++;
+    }
+  });
+
+  quotes = merged;
+  saveQuotes();
+
+  if (added > 0) {
+    const notification = document.getElementById("notification");
+    if (notification) {
+      notification.textContent = `${added} new quote(s) synced from server.`;
+      notification.style.display = "block";
+      setTimeout(() => notification.style.display = "none", 5000);
+    }
+  }
+}
+
 // ✅ DOM is ready
 window.onload = function () {
   loadQuotes();
   showRandomQuote();
   createAddQuoteForm();
+  fetchQuotesFromServer();
+  setInterval(fetchQuotesFromServer, 60000); // Sync every 60 seconds
 
-  // New Quote Button
   const newQuoteBtn = document.getElementById("newQuote");
   if (newQuoteBtn) {
     newQuoteBtn.addEventListener("click", function () {
@@ -128,13 +174,11 @@ window.onload = function () {
     });
   }
 
-  // Export button
   const exportBtn = document.getElementById("exportQuotes");
   if (exportBtn) {
     exportBtn.addEventListener("click", exportToJsonFile);
   }
 
-  // Import file input
   const importInput = document.getElementById("importFile");
   if (importInput) {
     importInput.addEventListener("change", importFromJsonFile);
