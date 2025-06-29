@@ -23,8 +23,9 @@ function saveQuotes() {
 
 // ✅ Show a random quote
 function showRandomQuote() {
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  const quote = quotes[randomIndex];
+  const filteredQuotes = filterQuotesByCategory();
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const quote = filteredQuotes[randomIndex];
   const quoteDisplay = document.getElementById('quoteDisplay');
   quoteDisplay.innerHTML = `<p>"${quote.text}"</p><small>— ${quote.category}</small>`;
 }
@@ -54,6 +55,25 @@ function createAddQuoteForm() {
   document.body.appendChild(formDiv);
 }
 
+// ✅ Populate unique categories into filter dropdown
+function populateCategories() {
+  const categories = [...new Set(quotes.map(q => q.category))];
+  const categorySelect = document.getElementById("categoryFilter");
+  categorySelect.innerHTML = '<option value="">All</option>';
+  categories.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    categorySelect.appendChild(option);
+  });
+}
+
+// ✅ Filter quotes by selected category
+function filterQuotesByCategory() {
+  const selected = document.getElementById("categoryFilter")?.value;
+  return selected ? quotes.filter(q => q.category === selected) : quotes;
+}
+
 // ✅ Logic to add a new quote
 function addQuote() {
   const newText = document.getElementById("newQuoteText").value.trim();
@@ -63,6 +83,7 @@ function addQuote() {
     const newQuote = { text: newText, category: newCategory };
     quotes.push(newQuote);
     saveQuotes();
+    populateCategories();
     showRandomQuote();
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
@@ -95,6 +116,7 @@ function importFromJsonFile(event) {
       if (Array.isArray(importedQuotes)) {
         quotes.push(...importedQuotes);
         saveQuotes();
+        populateCategories();
         showRandomQuote();
         alert("Quotes imported successfully!");
       } else {
@@ -172,11 +194,13 @@ function resolveConflicts(serverQuotes) {
       setTimeout(() => notification.style.display = "none", 5000);
     }
   }
+  populateCategories();
 }
 
 // ✅ DOM is ready
 window.onload = function () {
   loadQuotes();
+  populateCategories();
   showRandomQuote();
   createAddQuoteForm();
   syncQuotes();
@@ -206,5 +230,10 @@ window.onload = function () {
   const importInput = document.getElementById("importFile");
   if (importInput) {
     importInput.addEventListener("change", importFromJsonFile);
+  }
+
+  const categorySelect = document.getElementById("categoryFilter");
+  if (categorySelect) {
+    categorySelect.addEventListener("change", showRandomQuote);
   }
 };
