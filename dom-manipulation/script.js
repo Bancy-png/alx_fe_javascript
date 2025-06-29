@@ -1,4 +1,5 @@
 let quotes = [];
+let selectedCategory = "";
 
 // ✅ Load quotes from localStorage if available
 function loadQuotes() {
@@ -24,6 +25,10 @@ function saveQuotes() {
 // ✅ Show a random quote
 function showRandomQuote() {
   const filteredQuotes = filterQuotesByCategory();
+  if (filteredQuotes.length === 0) {
+    document.getElementById('quoteDisplay').innerHTML = "<p>No quotes found for selected category.</p>";
+    return;
+  }
   const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
   const quote = filteredQuotes[randomIndex];
   const quoteDisplay = document.getElementById('quoteDisplay');
@@ -70,8 +75,7 @@ function populateCategories() {
 
 // ✅ Filter quotes by selected category
 function filterQuotesByCategory() {
-  const selected = document.getElementById("categoryFilter")?.value;
-  return selected ? quotes.filter(q => q.category === selected) : quotes;
+  return selectedCategory ? quotes.filter(q => q.category === selectedCategory) : quotes;
 }
 
 // ✅ Logic to add a new quote
@@ -234,6 +238,9 @@ window.onload = function () {
 
   const categorySelect = document.getElementById("categoryFilter");
   if (categorySelect) {
-    categorySelect.addEventListener("change", showRandomQuote);
+    categorySelect.addEventListener("change", function () {
+      selectedCategory = this.value;
+      showRandomQuote();
+    });
   }
 };
