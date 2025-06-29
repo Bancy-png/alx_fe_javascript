@@ -60,12 +60,13 @@ function addQuote() {
   const newCategory = document.getElementById("newQuoteCategory").value.trim();
 
   if (newText && newCategory) {
-    quotes.push({ text: newText, category: newCategory });
+    const newQuote = { text: newText, category: newCategory };
+    quotes.push(newQuote);
     saveQuotes();
     showRandomQuote();
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
-    postQuoteToServer({ text: newText, category: newCategory });
+    postQuoteToServer(newQuote);
   }
 }
 
@@ -122,6 +123,11 @@ async function postQuoteToServer(quote) {
   }
 }
 
+// ✅ Sync quotes from server
+function syncQuotes() {
+  fetchQuotesFromServer();
+}
+
 // ✅ Fetch quotes from mock server and resolve conflicts
 async function fetchQuotesFromServer() {
   try {
@@ -172,8 +178,8 @@ window.onload = function () {
   loadQuotes();
   showRandomQuote();
   createAddQuoteForm();
-  fetchQuotesFromServer();
-  setInterval(fetchQuotesFromServer, 60000); // Sync every 60 seconds
+  syncQuotes();
+  setInterval(syncQuotes, 60000); // Sync every 60 seconds
 
   const newQuoteBtn = document.getElementById("newQuote");
   if (newQuoteBtn) {
